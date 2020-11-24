@@ -8,7 +8,7 @@ This lab work consist of several parts:
 ## Short configuration description
 
 Here is what should be done:
-- Execute commands on any VM to configure Kafka:
+- Execute commands on master VM in Dataproc server to configure Kafka:
 ```
 git clone https://github.com/RMDarth/BigData-ProCamp.git
 cd BigData-ProCamp/lab2/
