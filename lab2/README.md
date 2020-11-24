@@ -24,7 +24,7 @@ make
 ./kafka_consumer
 ```
 After that consumer should start processing messages from Kafka and displaying top 10 prices and last received price.
-More details on each step is described below.
+More details on each step are described below.
 
 ## Kafka configuration
 
