@@ -10,8 +10,8 @@ This lab work consist of several parts:
 Here is what should be done:
 - Execute commands on any VM to configure Kafka:
 ```
-git clone this repo
-cd folder
+git clone https://github.com/RMDarth/BigData-ProCamp.git
+cd BigData-ProCamp/lab2/
 ./create_topic.sh
 ```
 - Load NiFi template **`NiFiPublishBtcStockToKafka.xml`**
