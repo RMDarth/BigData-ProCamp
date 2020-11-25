@@ -34,13 +34,13 @@ void HighestPriceMonitor::ProcessMessage(const char* jsonMessage)
             return;
         }
 
-        std::cout << "New deal, price: " << doc["data"]["price"].GetFloat() << std::endl;
+        std::cout << "New deal, price: " << std::setprecision(2) << std::fixed << doc["data"]["price"].GetDouble() << std::endl;
 
-        // We can probably make exactly once guarantee by using checking for id uniqueness
+        // We can probably make exactly once guarantee by checking for id uniqueness
         _prices.emplace(
             doc["data"]["id_str"].GetString(),
             jsonMessage,
-            doc["data"]["price"].GetFloat());
+            doc["data"]["price"].GetDouble());
 
         if (_prices.size() > _topSize)
         {

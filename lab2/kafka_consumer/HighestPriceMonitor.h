@@ -13,15 +13,16 @@ public:
 private:
     struct Item
     {
-        Item(std::string messageId, std::string message, float messagePrice) : id(messageId), fullMessage(message), price(messagePrice) {}
-        std::string id;
-        std::string fullMessage;
-        double price;
+        Item(std::string messageId, std::string message, double messagePrice) : id(messageId), fullMessage(message), price(messagePrice) {}
 
         bool operator<(const Item& other) const
         {
             return price < other.price;
         }
+
+        std::string id;
+        std::string fullMessage;
+        double price;
     };
 
     uint16_t _topSize;
