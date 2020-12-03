@@ -9,7 +9,7 @@ git clone https://github.com/RMDarth/BigData-ProCamp.git
 cd BigData-ProCamp/lab3/
 chmod +x submit_map_reduce.sh upload_to_hdfs.sh
 ```
-- build map-reduce jar (alternatively there is a prebuilt jar):
+- build map-reduce jar, run unit tests (alternatively there is a prebuilt jar):
 ```
 mvn clean package -f AirlineDelay/pom.xml
 cp AirlineDelay/target/AirlineDelay-1.0.jar .
@@ -23,5 +23,7 @@ cp AirlineDelay/target/AirlineDelay-1.0.jar .
 ./submit_map_reduce.sh
 python TopDelayAirlines.py
 ```
+
+Because several reducers output several files, python script combines their output and get top 5 airlines.
 
 There is also alternative map-reduce implementation (in "alternative" folder), which doesn't require additional python script to run in the end, and will output a single file with Top 5 airlines. But it resticts reducers number to 1, so it can be slower on some big datasets.

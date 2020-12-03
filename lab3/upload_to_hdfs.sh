@@ -1,5 +1,5 @@
 usage() {
-  echo -e "Usage: $0 [-g <gs path>] [-o <hdfs path>]\n"\
+  echo -e "Usage: $0 [-g <gs path>] [-d <hdfs path>]\n"\
        "where\n"\
        "-g defines path to a bucket with input csv files\n"\
        "-d defines an hdfs destination path\n"\
