@@ -1,6 +1,7 @@
 package com.github.rmdarth.airline;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
@@ -14,8 +15,8 @@ import org.apache.hadoop.util.GenericOptionsParser;
 import org.apache.hadoop.util.StringUtils;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.HashMap;
 
@@ -55,13 +56,15 @@ public class AirlineDelayProcessor
         protected void setup(Context context) throws IOException {
             airlineNameMap = new HashMap<>();
             URI airlinesURI = Job.getInstance(context.getConfiguration()).getCacheFiles()[0];
-            loadAirlineNames(new Path(airlinesURI.getPath()).toString());
+            loadAirlineNames(context, airlinesURI);
         }
 
-        private void loadAirlineNames(String fileName) throws IOException {
+        private void loadAirlineNames(Context context, URI airlinesUri) throws IOException {
             BufferedReader reader = null;
             try {
-                reader = new BufferedReader(new FileReader(fileName));
+                FileSystem fs = FileSystem.get(context.getConfiguration());
+                Path path = new Path(airlinesUri.toString());
+                reader = new BufferedReader(new InputStreamReader(fs.open(path)));
                 String csvLine = null;
                 while ((csvLine = reader.readLine()) != null) {
                     String[] attributes = csvLine.split(",");
