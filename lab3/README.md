@@ -11,10 +11,8 @@ chmod +x submit_map_reduce.sh upload_to_hdfs.sh
 ```
 - build map-reduce jar (alternatively there is a prebuilt jar):
 ```
-cd AirlineDelay
-mvn clean package
-cp target/AirlineDelay-1.0.jar ../
-cd ..
+mvn clean package -f AirlineDelay/pom.xml
+cp AirlineDelay/target/AirlineDelay-1.0.jar .
 ```
 - get files to HDFS from Google Cloud Storage bucket:
 ```
@@ -26,4 +24,4 @@ cd ..
 python TopDelayAirlines.py
 ```
 
-There is also alternative map-reduce implementation (in "alternative" folder), which doesn't require additional python script to run in the end, and will output a single file with Top 5 airlines. But it resticts reducer numbers to 1, so it can be slower on some big datasets.
+There is also alternative map-reduce implementation (in "alternative" folder), which doesn't require additional python script to run in the end, and will output a single file with Top 5 airlines. But it resticts reducers number to 1, so it can be slower on some big datasets.

@@ -1,0 +1,8 @@
+Some invalid line
+Some invalid,line too
+Valid line,,,,AS,,,,,,,8,,,,,,,,,,,,,,,,,,,
+Valid line short,,,,AS,,,,,,,11
+Valid line short,unknown code,,,XX,,,,,,,2
+Valid line,Bad number,,,AS,,,,,,,Error,,,,,,,,,,,,,,,,,,,
+Valid line,Empty number,,,AS,,,,,,,,,,,,,,,,,,,,,,,,,,
+Invalid line again,
