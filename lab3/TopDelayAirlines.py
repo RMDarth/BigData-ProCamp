@@ -1,8 +1,12 @@
 import subprocess
+import sys
 
 
 def main():
-    result = subprocess.run(['hadoop fs -cat /bdpc/hadoop_mr/airline/output/part*'], shell=True, stdout=subprocess.PIPE)
+    hdfs_path = "/bdpc/hadoop_mr/airline/output"
+    if len(sys.argv) == 2:
+        hdfs_path = sys.argv[1]
+    result = subprocess.run(['hadoop fs -cat ' + hdfs_path + '/part*'], shell=True, stdout=subprocess.PIPE)
     data = result.stdout.decode("utf-8").splitlines()
     airlines = {}
     for line in data:
