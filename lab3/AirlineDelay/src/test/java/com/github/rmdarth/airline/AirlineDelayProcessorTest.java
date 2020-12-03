@@ -26,21 +26,21 @@ public class AirlineDelayProcessorTest extends TestCase {
         mapReduceDriver.addCacheFile(getClass().getResource("/airlines.csv").toURI());
     }
 
-    @Test
-    public void testCorrectGenericFlights() throws Exception {
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(
-                    new InputStreamReader(getClass().getResource("/generalFlights.csv").openStream()));
+    private void readCSVInput(String resource) throws IOException {
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(getClass().getResource(resource).openStream()))) {
             String csvLine = null;
             int lineNumber = 0;
             while ((csvLine = reader.readLine()) != null) {
                 mapReduceDriver.withInput(new IntWritable(lineNumber), new Text(csvLine));
+                lineNumber++;
             }
-        } finally {
-            if (reader != null)
-                reader.close();
         }
+    }
+
+    @Test
+    public void testCorrectGenericFlights() throws Exception {
+        readCSVInput("/generalFlights.csv");
 
         mapReduceDriver.withOutput(new Text("AA"), new Text("American Airlines Inc.\t0.0"));
         mapReduceDriver.withOutput(new Text("AS"), new Text("Alaska Airlines Inc.\t6.0"));
@@ -50,19 +50,7 @@ public class AirlineDelayProcessorTest extends TestCase {
 
     @Test
     public void testInvalidCSVValues() throws Exception {
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(
-                    new InputStreamReader(getClass().getResource("/incorrectFlights.csv").openStream()));
-            String csvLine = null;
-            int lineNumber = 0;
-            while ((csvLine = reader.readLine()) != null) {
-                mapReduceDriver.withInput(new IntWritable(lineNumber), new Text(csvLine));
-            }
-        } finally {
-            if (reader != null)
-                reader.close();
-        }
+        readCSVInput("/incorrectFlights.csv");
 
         mapReduceDriver.withOutput(new Text("AS"), new Text("Alaska Airlines Inc.\t9.5"));
         mapReduceDriver.withOutput(new Text("XX"), new Text("null\t2.0"));
