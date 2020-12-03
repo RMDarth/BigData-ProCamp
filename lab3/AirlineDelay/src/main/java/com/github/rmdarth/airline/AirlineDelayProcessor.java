@@ -30,12 +30,16 @@ public class AirlineDelayProcessor
         @Override
         public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
             String[] attributes = value.toString().split(",");
-            if (attributes[0].equals("YEAR") || attributes[11].isEmpty())
+            if (attributes.length < 12 || attributes[0].equals("YEAR") || attributes[11].isEmpty())
                 return; // skip header and empty delays
 
-            airlineCode.set(attributes[4]);
-            delayTime.set(Integer.parseInt(attributes[11]));
-            context.write(airlineCode, delayTime);
+            try {
+                airlineCode.set(attributes[4]);
+                delayTime.set(Integer.parseInt(attributes[11]));
+                context.write(airlineCode, delayTime);
+            } catch (NumberFormatException ex) {
+                System.err.println("Can't parse delay time: " + ex.getMessage());
+            }
 
             Counter counter = context.getCounter(CountersEnum.class.getName(),
                     CountersEnum.INPUT_FLIGHTS.toString());
@@ -51,21 +55,24 @@ public class AirlineDelayProcessor
         protected void setup(Context context) throws IOException {
             airlineNameMap = new HashMap<>();
             URI airlinesURI = Job.getInstance(context.getConfiguration()).getCacheFiles()[0];
-            loadAirlineNames(new Path(airlinesURI.getPath()).getName());
+            loadAirlineNames(new Path(airlinesURI.getPath()).toString());
         }
 
-        private void loadAirlineNames(String fileName) {
+        private void loadAirlineNames(String fileName) throws IOException {
+            BufferedReader reader = null;
             try {
-                BufferedReader reader = new BufferedReader(new FileReader(fileName));
+                reader = new BufferedReader(new FileReader(fileName));
                 String csvLine = null;
                 while ((csvLine = reader.readLine()) != null) {
                     String[] attributes = csvLine.split(",");
                     airlineNameMap.put(attributes[0], attributes[1]);
-                    System.out.println(csvLine);
                 }
             } catch (IOException ioe) {
                 System.err.println("Caught exception while parsing the airlines file '"
                         + StringUtils.stringifyException(ioe));
+            } finally {
+                if (reader != null)
+                    reader.close();
             }
         }
 
