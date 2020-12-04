@@ -26,6 +26,8 @@ python TopDelayAirlines.py
 
 Because several reducers output several files, python script combines their output and gets top 5 airlines.
 
+#### Alternative implementation:
+
 There is also alternative map-reduce implementation (in "alternative" folder), which doesn't require additional python script to run in the end, and will output a single file with Top 5 airlines. But it resticts reducers number to 1, so it can be slower on some big datasets. 
 
 To build it, second step should be changed:
