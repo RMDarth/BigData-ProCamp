@@ -24,6 +24,17 @@ cp AirlineDelay/target/AirlineDelay-1.0.jar .
 python TopDelayAirlines.py
 ```
 
-Because several reducers output several files, python script combines their output and get top 5 airlines.
+Because several reducers output several files, python script combines their output and gets top 5 airlines.
 
-There is also alternative map-reduce implementation (in "alternative" folder), which doesn't require additional python script to run in the end, and will output a single file with Top 5 airlines. But it resticts reducers number to 1, so it can be slower on some big datasets.
+There is also alternative map-reduce implementation (in "alternative" folder), which doesn't require additional python script to run in the end, and will output a single file with Top 5 airlines. But it resticts reducers number to 1, so it can be slower on some big datasets. 
+
+To build it, second step should be changed:
+```
+mvn clean package -f alternative/AirlineDelay/pom.xml
+cp alternative/AirlineDelay/target/AirlineDelay-1.0.jar .
+```
+And to run and show result, last step should be changed:
+```
+./submit_map_reduce.sh
+hadoop fs -cat /bdpc/hadoop_mr/airline/output/part*
+```
