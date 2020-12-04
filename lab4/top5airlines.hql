@@ -31,4 +31,8 @@ LOCATION 'hdfs:///bdpc/hadoop/lab4/airlines';
 
 !echo Running query for Top 5 airlines....;
 
-SELECT F.AIRLINE, A.NAME, AVG(F.DEPARTURE_DELAY) as AvgDelay FROM Flights F JOIN Airlines A ON F.AIRLINE = A.AIRLINE GROUP BY F.AIRLINE, A.NAME ORDER BY AvgDelay DESC LIMIT 5;
+SELECT F.AIRLINE, A.NAME, AVG(F.DEPARTURE_DELAY) as AvgDelay 
+FROM Flights F JOIN Airlines A 
+	ON F.AIRLINE = A.AIRLINE 
+GROUP BY F.AIRLINE, A.NAME
+ORDER BY AvgDelay DESC LIMIT 5;
