@@ -24,7 +24,7 @@ cp AirlineDelay/target/AirlineDelay-1.0.jar .
 python TopDelayAirlines.py
 ```
 
-Because several reducers output several files, python script combines their output and gets top 5 airlines.
+Because several reducers output several files, python script combines their output and gets top 5 airlines. This could be done as additional map-reduce job (with a single reducer for example), but because airlines number is small, a simple script to process output will perform better than spinning new map-reduce job.
 
 #### Alternative implementation:
 
