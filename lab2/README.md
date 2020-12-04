@@ -52,7 +52,7 @@ sudo apt install librdkafka-dev rapidjson-dev
 make
 ./kafka_consumer
 ```
-First line install dependencies (kafka dev lib and json lib). After that consumer is built and run. It should start processing messages from "btc_stock" topic, parse them, display the price from current messages and top 10 prices from all messages encountered during this run.
+First line installs dependencies (kafka dev lib and json lib). After that consumer is built and run. It should start processing messages from "btc_stock" topic, parse them, display the price from current messages and top 10 prices from all messages encountered during this run.
 To stop running the consumer press Ctrl+C, it will stop, free kafka consumer connection and display more detailed information about top 10 deals.
 There is an alternative java consumer in the java_client folder with the same functionality. 
 
