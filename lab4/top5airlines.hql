@@ -1,3 +1,11 @@
+!echo Creating database HadoopLab4...;
+
+DROP DATABASE IF EXISTS HadoopLab4 CASCADE;
+CREATE DATABASE HadoopLab4;
+USE HadoopLab4;
+
+!echo Creating tables...;
+
 CREATE EXTERNAL TABLE IF NOT EXISTS Flights
 (YEAR int, MONTH int, DAY int, DAY_OF_WEEK int, 
  AIRLINE string, 
@@ -20,5 +28,7 @@ ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 STORED AS TEXTFILE
 LOCATION 'hdfs:///bdpc/hadoop/lab4/airlines';
+
+!echo Running query for Top 5 airlines....;
 
 SELECT F.AIRLINE, A.NAME, AVG(F.DEPARTURE_DELAY) as AvgDelay FROM Flights F JOIN Airlines A ON F.AIRLINE = A.AIRLINE GROUP BY F.AIRLINE, A.NAME ORDER BY AvgDelay DESC LIMIT 5;
