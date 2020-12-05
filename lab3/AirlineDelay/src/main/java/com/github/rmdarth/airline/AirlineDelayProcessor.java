@@ -110,7 +110,7 @@ public class AirlineDelayProcessor
         jobAvgDelay.setOutputValueClass(Text.class);
         jobAvgDelay.setMapOutputKeyClass(Text.class);
         jobAvgDelay.setMapOutputValueClass(IntWritable.class);
-        jobAvgDelay.addCacheFile(new Path(remainingArgs[1]).toUri());
+        jobAvgDelay.addCacheFile(new Path(remainingArgs[1]).toUri()); // to use for broadcast join
 
         FileInputFormat.addInputPath(jobAvgDelay, new Path(remainingArgs[0]));
         FileOutputFormat.setOutputPath(jobAvgDelay, new Path(remainingArgs[2]));
