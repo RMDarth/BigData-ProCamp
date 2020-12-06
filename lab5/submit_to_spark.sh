@@ -1,0 +1,2 @@
+spark-submit --master yarn --deploy-mode cluster --num-executors 20 --executor-memory 1G --executor-cores 1 --driver-memory 1G --class com.github.rmdarth.PopularAirport.PopularAirportProcessor SparkLab5-1.0.jar 
+hadoop dfs -cat /bdpc/hadoop_mr/airline/popularAirports/*

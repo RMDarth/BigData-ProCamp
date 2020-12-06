@@ -27,5 +27,7 @@ public class PopularAirportProcessor {
                 groupByMonth.reduceByKey((r1, r2) -> r1._2 > r2._2 ? r1 : r2);
 
         System.out.println(maxInMonth.sortByKey().collect());
+        maxInMonth.sortByKey().map(vals -> vals._1.toString() + "\t" + vals._2.productIterator().mkString("\t"))
+                  .saveAsTextFile("/bdpc/hadoop_mr/airline/popularAirports");
     }
 }
