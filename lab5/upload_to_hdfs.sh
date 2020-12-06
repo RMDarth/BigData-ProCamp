@@ -18,12 +18,13 @@ done
 
 if [[ -z "$HDFS_PATH" ]];
 then
-  HDFS_PATH="/bdpc/hadoop_mr/airline"
+  HDFS_PATH="/bdpc/hadoop/lab5"
 fi
 
 hadoop fs -rm -R "$HDFS_PATH"
-hdfs dfs -mkdir -p "$HDFS_PATH"
 hdfs dfs -mkdir -p "${HDFS_PATH}/input"
+hdfs dfs -mkdir -p "${HDFS_PATH}/airlines"
+hdfs dfs -mkdir -p "${HDFS_PATH}/airports"
 
 if [[ -z "$GS_PATH" ]];
 then
@@ -48,9 +49,13 @@ UPLOAD_CMD1="hdfs dfs -cp ${GS_PATH}/flights.csv ${HDFS_PATH}/input/flights.csv"
 echo "$UPLOAD_CMD1"
 ${UPLOAD_CMD1}
 
-UPLOAD_CMD2="hdfs dfs -cp ${GS_PATH}/airlines.csv ${HDFS_PATH}/airlines.csv"
+UPLOAD_CMD2="hdfs dfs -cp ${GS_PATH}/airlines.csv ${HDFS_PATH}/airlines/airlines.csv"
 echo "$UPLOAD_CMD2"
 ${UPLOAD_CMD2}
+
+UPLOAD_CMD3="hdfs dfs -cp ${GS_PATH}/airports.csv ${HDFS_PATH}/airports/airports.csv"
+echo "$UPLOAD_CMD3"
+${UPLOAD_CMD3}
 
 echo "<<<<<<<<<<<<<<<<<<  HDFS  <<<<<<<<<<<<<<<<<<<<<"
 
