@@ -4,10 +4,11 @@ import junit.framework.TestCase;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.broadcast.Broadcast;
 import org.junit.*;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class PopularAirportProcessorTest extends TestCase {
     PopularAirportProcessor airportProcessor;
@@ -21,22 +22,33 @@ public class PopularAirportProcessorTest extends TestCase {
         context = new JavaSparkContext(conf);
     }
 
+    @After
+    public void finalize()
+    {
+        context.close();
+    }
+
     @Test
     public void testFlights() throws Exception {
         JavaRDD<String[]> data = airportProcessor.loadData(
                 context,
                 getClass().getResource("/flights.csv").getPath());
 
-        List<String[]> result = airportProcessor
-                    .getTopAirportsByMonth(data)
-                    .map(line -> new String[] {line._1.toString(), line._2._1, line._2._2.toString()})
-                    .collect();
+        Broadcast<Map<String, String>> airports = context.broadcast(
+                airportProcessor.loadAirports(
+                    context,
+                    getClass().getResource("/airports.csv").getPath()).collectAsMap());
 
-        String[][] expected = new String[][]{
-                {"1", "A2", "3"},
-                {"2", "A1", "2"},
-                {"3", "A3", "2"},
-                {"4", "A2", "4"}
+        List<String[]> result = airportProcessor
+                .getTopAirportsByMonth(data, airports, null)
+                .map(line -> new String[]{line._1.toString(), line._2._1(), line._2._2(), line._2._3().toString()})
+                .collect();
+
+        String[][] expected = {
+                {"1", "ABR", "Aberdeen Regional Airport", "3"},
+                {"2", "A1", "Unknown", "2"},
+                {"3", "FAR", "Hector International Airport", "2"},
+                {"4", "ABR", "Aberdeen Regional Airport", "4"}
         };
 
         Assert.assertArrayEquals(result.toArray(), expected);

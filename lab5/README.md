@@ -3,6 +3,7 @@
 
 #### Configuration description:
  - upload files from [here](https://www.kaggle.com/usdot/flight-delays) to Google Cloud Storage bucket
+ - install Maven (sudo apt install maven) and [sbt](https://www.scala-sbt.org/1.x/docs/Installing-sbt-on-Linux.html) to compile Java and Scala code 
  - get this repo (execute on main VM on DataProc):
 ```
 git clone https://github.com/RMDarth/BigData-ProCamp.git
