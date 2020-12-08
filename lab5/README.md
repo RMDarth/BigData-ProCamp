@@ -7,7 +7,7 @@
 ```
 git clone https://github.com/RMDarth/BigData-ProCamp.git
 cd BigData-ProCamp/lab5/
-chmod +x submit_to_spark.sh upload_to_hdfs.sh
+chmod +x submit_to_spark_t1.sh submit_to_spark_t2.sh upload_to_hdfs.sh
 ```
 - get files to HDFS from Google Cloud Storage bucket:
 ```
