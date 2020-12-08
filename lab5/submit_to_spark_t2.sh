@@ -49,8 +49,8 @@ echo Submitting job to spark...
 spark-submit --master yarn \
              --num-executors 20 --executor-memory 1G --executor-cores 1 --driver-memory 1G \
              --conf spark.ui.showConsoleProgress=true \
-             --class com.github.rmdarth.bdpclab5.PopularAirportProcessor \
+             --class com.github.rmdarth.bdpclab5.CanceledFlights \
              sparklabtask2_2.12-1.0.jar "$INPUT_PATH" "$AIRLINES_PATH" "$AIRPORTS_PATH" "$OUTPUT_PATH"
-hadoop dfs -cat $OUTPUT_PATH/*
-
-echo "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+hadoop dfs -ls $OUTPUT_PATH
+echo "see content of the output CSV: hadoop dfs -cat $OUTPUT_PATH/output_csv/*"
+echo "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
