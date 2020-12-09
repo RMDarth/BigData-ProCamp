@@ -11,7 +11,6 @@ import scala.Tuple2;
 import scala.Tuple3;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -50,7 +49,7 @@ public class PopularAirportProcessor {
                 .mapToPair(row -> {
                     String[] keys = row._1.split("_");
                     int month = Integer.parseInt(keys[0]);
-                    if (airportsAccums != null)
+                    if (airportsAccums != null && airportsAccums.containsKey(keys[1]))
                         airportsAccums.get(keys[1]).add(new Tuple2<>(month, row._2.longValue()));
                     return new Tuple2<>(
                             month,
