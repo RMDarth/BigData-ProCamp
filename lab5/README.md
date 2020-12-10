@@ -29,7 +29,7 @@ cp SparkLab5Task1/target/SparkLab5-1.0.jar .
 #### Task 2:
 - build spark app jar (Scala based):
 ```
-(cd SparkLab5Task2/; sbt package)
+(cd SparkLab5Task2/; sbt test package)
 cp SparkLab5Task2/target/scala-2.12/sparklabtask2_2.12-1.0.jar .
 ```
 - run spark job and get json document with canceled flights statistics by airline by airport
