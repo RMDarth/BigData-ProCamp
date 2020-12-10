@@ -20,11 +20,14 @@ object CanceledFlights {
   def process(input: RDD[Array[String]], airlineAccums: Map[String, LongAccumulator]): RDD[((String, String), Float)] = {
     // airline is line[4], origin airport is line[7], cancel is line[24]
     input
+      // grouping by (airline,airport) key
       .map(line => (
         (line(4), line(7)),  // key (airline, airport)
         (if (line(24) == "0") 0f else 1f, { airlineAccums(line(4)).add(1); 1 }) // value (cancel, total)
       ))
+      // get total cancel and total flight
       .reduceByKey((i1, i2) => (i1._1 + i2._1, i1._2 + i2._2))
+      // calculate percentage
       .map{ case((airline, airport), (cancel, total)) => ((airline, airport), cancel/total) }
   }
 
@@ -39,12 +42,21 @@ object CanceledFlights {
     if (map.value.contains(key)) map.value(key) else "Unknown"
   }
 
+  def getAccumulators(sc: SparkContext, airlines: Map[String, String]) = {
+    var airlineAccumsMutable = collection.mutable.Map[String, LongAccumulator]()
+    for (airline <- airlines.keys) {
+      airlineAccumsMutable += (airline -> sc.longAccumulator(airline))
+    }
+    airlineAccumsMutable.toMap
+  }
+
   def main(args: Array[String]): Unit = {
     if (args.length != 4) {
       println("Usage: canceledFlights <flight.csv> <airlines.csv> <airports.csv> <outfolder>")
       sys.exit(2)
     }
 
+    val specialAirport = "Waco Regional Airport";
     val sc = new SparkContext("local[*]", "CanceledFlights")
 
     // load data and dimensions
@@ -54,22 +66,20 @@ object CanceledFlights {
     val airportsMap = getBroadcastedDimension(sc, args(2))
 
     // create accumulators
-    var airlineAccumsMutable = collection.mutable.Map[String, LongAccumulator]()
-    for (airline <- airlinesMap.value.keys) {
-      airlineAccumsMutable += (airline -> sc.longAccumulator(airline))
-    }
-    val airlineAccums = airlineAccumsMutable.toMap
+    val airlineAccums = getAccumulators(sc, airlinesMap.value)
 
     // process data
     val processedData = process(inputCSV, airlineAccums)
     val outputData = processedData
+      // add dimensions data
       .map( { case((airline, airport), cancelRate)
                 => ((getValueOrUnknown(airlinesMap,airline), airline), (getValueOrUnknown(airportsMap, airport), airport, cancelRate)) } )
+      // sort by airline and cancel rate
       .sortBy(v => (v._1, -v._2._3))
 
-    // Output JSON for airlines
+    // output JSON for airlines
     val json = "airlines" -> outputData
-      .filter( {case(key, (airport, code, cancelRate)) => airport != "Waco Regional Airport" })
+      .filter( {case(_, (airport, _, _)) => airport != specialAirport })
       .groupByKey()
       .collect().toList.map{
         case (airline, airports) =>
@@ -87,14 +97,14 @@ object CanceledFlights {
     os.write(compact(render(json)).getBytes("UTF-8"))
     os.close()
 
-    // Output CSV for Waco Regional Airport
-    outputData.filter(_._2._1 == "Waco Regional Airport" )
+    // output CSV for Waco Regional Airport
+    outputData.filter(_._2._1 == specialAirport )
       .map( { case((airline, airlineCode), (airport, airportCode, cancelRate))
                 => List(airline, airlineCode, airport, airportCode, cancelRate).mkString(",") } )
       .coalesce(1)
       .saveAsTextFile(args(3) + "/output_csv")
 
-    // Print accumulators
+    // print accumulators
     println("Total flights by airline: ")
     for ((airline, accum) <- airlineAccums) {
       println(airline + ": " + accum.sum)
