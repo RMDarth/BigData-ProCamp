@@ -1,0 +1,13 @@
+YEAR,MONTH,DAY,DAY_OF_WEEK,AIRLINE,FLIGHT_NUMBER,TAIL_NUMBER,ORIGIN_AIRPORT,DESTINATION_AIRPORT,SCHEDULED_DEPARTURE,DEPARTURE_TIME,DEPARTURE_DELAY,TAXI_OUT,WHEELS_OFF,SCHEDULED_TIME,ELAPSED_TIME,AIR_TIME,DISTANCE,WHEELS_ON,TAXI_IN,SCHEDULED_ARRIVAL,ARRIVAL_TIME,ARRIVAL_DELAY,DIVERTED,CANCELLED,CANCELLATION_REASON,AIR_SYSTEM_DELAY,SECURITY_DELAY,AIRLINE_DELAY,LATE_AIRCRAFT_DELAY,WEATHER_DELAY
+,,,,AS,,,ANC,SEA,,,,,,,,,,,,,,,,0,,,,,,
+,,,,AS,,,ANC,SEA,,,,,,,,,,,,,,,,1,,,,,,
+,,,,AA,,,ANC,SEA,,,,,,,,,,,,,,,,0,,,,,,
+,,,,AA,,,ANC,SEA,,,,,,,,,,,,,,,,0,,,,,,
+,,,,AS,,,ACT,SEA,,,,,,,,,,,,,,,,1,,,,,,
+,,,,AS,,,LAX,SEA,,,,,,,,,,,,,,,,1,,,,,,
+,,,,AS,,,LAX,SEA,,,,,,,,,,,,,,,,0,,,,,,
+,,,,AS,,,LAX,SEA,,,,,,,,,,,,,,,,0,,,,,,
+,,,,AS,,,LAX,SEA,,,,,,,,,,,,,,,,0,,,,,,
+,,,,US,,,LAX,SEA,,,,,,,,,,,,,,,,0,,,,,,
+,,,,US,,,ACT,SEA,,,,,,,,,,,,,,,,0,,,,,,
+,,,,US,,,ACT,SEA,,,,,,,,,,,,,,,,0,,,,,,
