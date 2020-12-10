@@ -34,6 +34,18 @@ public class PopularAirportProcessor {
                 .filter(line -> !line._1().equals("IATA_CODE"));
     }
 
+    public Map<String, MonthAccumulator> createAccumulators(JavaSparkContext sc, Map<String, String> airportsData)
+    {
+        Map<String, MonthAccumulator> airportsAccums = new TreeMap<>();
+        for (String key : airportsData.keySet()) {
+            MonthAccumulator monthAccumulator = new MonthAccumulator();
+            sc.sc().register(monthAccumulator, key);
+            airportsAccums.put(key, monthAccumulator);
+        }
+
+        return airportsAccums;
+    }
+
     public JavaPairRDD<Integer, Tuple3<String,String,Integer>> getTopAirportsByMonth(
             JavaRDD<String[]> input,
             Broadcast<Map<String, String>> airportsData,
@@ -75,12 +87,7 @@ public class PopularAirportProcessor {
                 = sc.broadcast(loadAirports(sc, airports).collectAsMap());
 
         // create accumulators
-        Map<String, MonthAccumulator> airportsAccums = new TreeMap<>();
-        for (String key : airportsData.value().keySet()) {
-            MonthAccumulator monthAccumulator = new MonthAccumulator();
-            sc.sc().register(monthAccumulator, key);
-            airportsAccums.put(key, monthAccumulator);
-        }
+        Map<String, MonthAccumulator> airportsAccums = createAccumulators(sc, airportsData.value());
 
         // process
         JavaPairRDD<Integer, Tuple3<String,String,Integer>> maxInMonth =
