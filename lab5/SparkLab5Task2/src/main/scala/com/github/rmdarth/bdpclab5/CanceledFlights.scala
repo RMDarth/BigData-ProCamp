@@ -57,7 +57,7 @@ object CanceledFlights {
     }
 
     val specialAirport = "Waco Regional Airport";
-    val sc = new SparkContext("local[*]", "CanceledFlights")
+    val sc = new SparkContext("yarn", "CanceledFlights")
 
     // load data and dimensions
     val inputCSV =
