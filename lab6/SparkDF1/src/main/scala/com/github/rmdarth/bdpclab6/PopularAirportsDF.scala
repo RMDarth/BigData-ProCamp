@@ -41,6 +41,7 @@ object PopularAirportsDF {
     // get count of flights for each airport by month
     val airportMonthCount = flights
       .groupBy("MONTH", "DESTINATION_AIRPORT").count()
+      .cache()
 
     // update accums
     airportMonthCount.foreach(row => {
@@ -72,8 +73,8 @@ object PopularAirportsDF {
     // init spark
     val spark = SparkSession
       .builder
-      .appName("BDPC-Lab5-Task1")
-      .master("local")
+      .appName("BDPC-Lab6-Task1-PopularAirports")
+      .master("yarn")
       .getOrCreate()
 
     // load data and init accums
