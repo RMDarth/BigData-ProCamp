@@ -92,6 +92,10 @@ object PopularAirportsDF {
       .write.option("sep","\t").option("header","true")
       .csv(args(2))
 
+    for (airport <- accumsMap.keySet) {
+      println(airport + ": " + accumsMap(airport).value)
+    }
+
     spark.close()
   }
 }
