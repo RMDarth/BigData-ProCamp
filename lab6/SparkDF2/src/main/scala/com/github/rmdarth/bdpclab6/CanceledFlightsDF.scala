@@ -20,11 +20,13 @@ object CanceledFlightsDF {
       spark.read
         .option("header", "true")
         .csv(airportsFile))
+    airports.value.count()
 
     val airlines = spark.sparkContext.broadcast(
       spark.read
         .option("header", "true")
         .csv(airlinesFile))
+    airlines.value.count()
 
     (flights, airports, airlines)
   }
