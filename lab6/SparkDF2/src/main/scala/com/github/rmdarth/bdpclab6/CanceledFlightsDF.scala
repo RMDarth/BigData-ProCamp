@@ -60,8 +60,8 @@ object CanceledFlightsDF {
                     airlines: DataFrame): DataFrame = {
     import cancelInfo.sparkSession.implicits._
     cancelInfo.as("C")
-      .join(airports.as("P"), col("C.ORIGIN_AIRPORT") === col("P.IATA_CODE"))
-      .join(airlines.as("A"), col("C.AIRLINE") === col("A.IATA_CODE"))
+      .join(airports.as("P"), col("C.ORIGIN_AIRPORT") === col("P.IATA_CODE"), "left")
+      .join(airlines.as("A"), col("C.AIRLINE") === col("A.IATA_CODE"), "left")
       .select(
         $"C.AIRLINE".as("AIRLINE_CODE"),
         $"A.AIRLINE".as("AIRLINE_NAME"),
@@ -69,6 +69,7 @@ object CanceledFlightsDF {
         $"P.AIRPORT".as("AIRPORT_NAME"),
         $"C.CANCEL_PERCENT")
       .orderBy(asc("AIRLINE_CODE"), desc("CANCEL_PERCENT"))
+      .na.fill("Unknown")
   }
 
   def main(args: Array[String]): Unit = {

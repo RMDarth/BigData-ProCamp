@@ -36,8 +36,8 @@ class CanceledFlightsDFTest extends FunSuite with BeforeAndAfter {
       Row("AS", "Alaska Airlines Inc.",    "ACT", "Waco Regional Airport",                        1.0f),
       Row("AS", "Alaska Airlines Inc.",    "ANC", "Ted Stevens Anchorage International Airport",  0.5f),
       Row("AS", "Alaska Airlines Inc.",    "LAX", "Los Angeles International Airport",            0.25f),
-      Row("US", "US Airways Inc.",         "ACT", "Waco Regional Airport",                        0.0f),
       Row("US", "US Airways Inc.",         "LAX", "Los Angeles International Airport",            0.0f),
+      Row("US", "US Airways Inc.",         "ACT", "Waco Regional Airport",                        0.0f),
     )
 
     resultList should be(expected)

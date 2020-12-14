@@ -50,7 +50,7 @@ spark-submit --master yarn \
              --num-executors 20 --executor-memory 1G --executor-cores 1 --driver-memory 1G \
              --conf spark.ui.showConsoleProgress=true \
              --class com.github.rmdarth.bdpclab6.CanceledFlightsDF \
-             sparklabtask2_2.12-1.0.jar "$INPUT_PATH" "$AIRPORTS_PATH" "$AIRLINES_PATH" "$OUTPUT_PATH"
+             sparkdf2_2.12-1.0.jar "$INPUT_PATH" "$AIRPORTS_PATH" "$AIRLINES_PATH" "$OUTPUT_PATH"
 hadoop dfs -ls $OUTPUT_PATH
 echo "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
 hadoop dfs -cat $OUTPUT_PATH/output_json/*
