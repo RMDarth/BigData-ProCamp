@@ -51,9 +51,11 @@ spark-submit --master yarn \
              --conf spark.ui.showConsoleProgress=true \
              --class com.github.rmdarth.bdpclab6.CanceledFlightsDF \
              sparkdf2_2.12-1.0.jar "$INPUT_PATH" "$AIRPORTS_PATH" "$AIRLINES_PATH" "$OUTPUT_PATH"
-hadoop dfs -ls $OUTPUT_PATH
+hdfs dfs -ls $OUTPUT_PATH
 echo "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-hadoop dfs -cat $OUTPUT_PATH/output_json/* | head -15
+echo "Output for hdfs dfs -cat $OUTPUT_PATH/output_json/* | head -15"
+hdfs dfs -cat $OUTPUT_PATH/output_json/* | head -15
 echo "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-hadoop dfs -cat $OUTPUT_PATH/output_csv/*
+echo "Output for hdfs dfs -cat $OUTPUT_PATH/output_csv/*"
+hdfs dfs -cat $OUTPUT_PATH/output_csv/*
 echo "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
