@@ -37,12 +37,18 @@ public class AirlineDelayProcessor
                 delayTime.set(Integer.parseInt(attributes[11]));
                 context.write(airlineCode, delayTime);
 
+                // GLC| There are default map counters which show the same info
+                // GLC| It make more sense to create domain related counters (say, per airline)
                 Counter counter = context.getCounter(CountersEnum.class.getName(),
                         CountersEnum.INPUT_FLIGHTS.toString());
                 counter.increment(1);
             }
             catch (NumberFormatException e)
             {
+                // GLC| it's a good practice to count exceptions with Counters and avoid logging out each error
+                // GLC| You can log out randomly with some chance (small one) or
+                // GLC| emit a log entry per exception type / entry exra conditions
+                // GLC| (say, NumberParseExc, entry has XX value) only once
                 if (!attributes[0].equals("YEAR"))
                     e.printStackTrace();
             }
@@ -57,6 +63,7 @@ public class AirlineDelayProcessor
         private Text key = new Text();
 
         private Configuration conf;
+        // GLC| No need to declare the field member as it's used locally to loadAirlineNames
         private BufferedReader reader;
 
         @Override
@@ -84,12 +91,15 @@ public class AirlineDelayProcessor
 
         @Override
         public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
+            // GLC| It's better to use double in java
             float sum = 0;
+            // GLC| It's better to long in this case
             float count = 0;
             for (IntWritable val : values) {
                 sum += val.get();
                 count ++;
             }
+            // GLC| What about key collisions? I'd use TreeSet
             airlineAvgMap.put(sum / count, key.toString());
             if (airlineAvgMap.size() > 5)
             {
@@ -102,6 +112,7 @@ public class AirlineDelayProcessor
             for (Map.Entry<Float, String> entry : airlineAvgMap.entrySet())
             {
                 String airlineCode = entry.getValue().toString();
+                // GLC| What would you need to change if you're asked to use `,` as the separator?
                 result.set(airlineNameMap.get(airlineCode) + "\t" + entry.getKey().toString());
                 key.set(entry.getValue());
                 context.write(key, result);
@@ -122,6 +133,7 @@ public class AirlineDelayProcessor
         Job jobAvgDelay = Job.getInstance(conf, "airline avg delay");
         jobAvgDelay.setJarByClass(AirlineDelayProcessor.class);
         jobAvgDelay.setMapperClass(AirlineMapper.class);
+        // GLC| It's worth adding a combiner. It will speed up overall job execution
         jobAvgDelay.setReducerClass(AvgDelayReducer.class);
         jobAvgDelay.setOutputKeyClass(Text.class);
         jobAvgDelay.setOutputValueClass(Text.class);
@@ -130,6 +142,13 @@ public class AirlineDelayProcessor
         jobAvgDelay.addCacheFile(new Path(remainingArgs[1]).toUri());
         jobAvgDelay.setNumReduceTasks(1);
 
+        // It's worth playing with compression
+        // http://hadoop.apache.org/docs/stable/hadoop-mapreduce-client/hadoop-mapreduce-client-core/mapred-default.xml
+        // GLC| mapreduce.map.output.compress [false]	Should the outputs of the maps be compressed before being sent across the network. Uses SequenceFile compression.
+        // GLC| mapreduce.map.output.compress.codec[org.apache.hadoop.io.compress.DefaultCodec]	If the map outputs are compressed, how should they be compressed?
+        // GLC| conf.set("mapreduce.map.output.compress", true)
+        // GLC| FileOutputFormat.setCompressOutput();
+        // GLC| FileOutputFormat.setOutputCompressorClass(job, COMP_CLASS.class);
         FileInputFormat.addInputPath(jobAvgDelay, new Path(remainingArgs[0]));
         FileOutputFormat.setOutputPath(jobAvgDelay, new Path(remainingArgs[2]));
 

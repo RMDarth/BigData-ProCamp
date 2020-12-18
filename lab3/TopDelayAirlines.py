@@ -13,9 +13,12 @@ def main():
         elems = line.split("\t")
         if len(elems) < 3:
             continue
-
+        # GLC| What about key collisions?
         airlines[float(elems[2])] = elems
 
+    # GLC| There is a way to make it smaller
+    # for key in sorted(airlines.keys(), reverse=True)[:result_count]:
+    #    print(airlines[key])
     result_count = 5
     for key in sorted(airlines.keys(), reverse=True):
         print(airlines[key])
