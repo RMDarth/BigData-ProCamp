@@ -1,10 +1,37 @@
 package com.github.rmdarth.bdpclab7
 
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.sql.functions._
+import org.apache.spark.sql.streaming.Trigger
 import org.apache.spark.sql.types._
 
 object BtcAggregation {
+
+  def process(input: DataFrame): DataFrame = {
+    import input.sparkSession.implicits._
+
+    // declare json schema for each flow-file
+    val schema = new StructType().
+      add("data", new StructType()
+        .add("datetime", StringType)
+        .add("amount", DoubleType)
+        .add("price", DoubleType))
+
+    input
+      // parse json
+      .select(from_json($"value".cast(StringType), schema).as("btc"))
+      .withColumn("timestamp", $"btc.data.datetime".cast(LongType).cast(TimestampType))
+      .withColumn("sales", $"btc.data.amount" * $"btc.data.price")
+      // add window and watermark
+      .withWatermark("timestamp", "3 minutes")
+      .groupBy(window($"timestamp", "1 minute"))
+      // aggregate
+      .agg(
+        count("btc.data.price").as("Count"),
+        avg("btc.data.price").as("AvgPrice"),
+        sum("sales").as("SalesTotal"))
+  }
+
   def main(args: Array[String]): Unit = {
     if (args.length != 3) {
       println("Usage: SparkStreaming <bucket_name> <folder_name> <kafka_topic>")
@@ -21,34 +48,20 @@ object BtcAggregation {
       .appName("BDPC-Lab7-BtcAggregation")
       .master("local")
       .getOrCreate()
-    import spark.implicits._
-
-    // declare json schema for each flowfile
-    val schema = new StructType().
-      add("data", new StructType()
-        .add("price", DoubleType)
-        .add("datetime", StringType))
 
     // read data from stream
-    spark.readStream.format("kafka")
+    val input = spark.readStream.format("kafka")
       .option("kafka.bootstrap.servers", "localhost:9092")
       .option("subscribe", topicName)
       .load()
-      // parse json
-      .select(from_json($"value".cast(StringType), schema).as("btc"))
-      .withColumn("timestamp", $"btc.data.datetime".cast(LongType).cast(TimestampType))
-      // add window and watermark
-      .withWatermark("timestamp", "3 minutes")
-      .groupBy(window($"timestamp", "1 minute"))
-      // aggregate
-      .agg(
-        sum("btc.data.price").as("TotalSum"),
-        count(lit(1)).as("Count"))
-      .withColumn("Avg", $"TotalSum" / $"Count")
-      // output
+
+    // process and output
+    process(input)
+      // write data
       .writeStream
       .format("json")
-      .option("checkpointLocation", "/Users/darth/Downloads/testBtcOutput/checkpoint")
+      .trigger(Trigger.ProcessingTime("30 seconds"))
+      .option("checkpointLocation", "/bdpc/lab7/checkpoint")
       .start("gs://"+ bucketName +"/" + folderName)
       .awaitTermination()
 
