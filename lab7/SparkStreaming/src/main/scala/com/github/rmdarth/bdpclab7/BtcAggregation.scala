@@ -46,7 +46,7 @@ object BtcAggregation {
     val spark = SparkSession
       .builder
       .appName("BDPC-Lab7-BtcAggregation")
-      .master("local")
+      .master("yarn")
       .getOrCreate()
 
     // read data from stream

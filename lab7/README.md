@@ -11,7 +11,7 @@ chmod +x submit_to_spark.sh create_topic.sh
 ```
  - build Spark job (or use prebuilt):
  ```
-(cd SparkStreaming/; sbt package)
+(cd SparkStreaming/; sbt test package)
 cp SparkStreaming/target/scala-2.12/sparkstreaming_2.12-1.0.jar .
 ```
  - create Kafka topic
