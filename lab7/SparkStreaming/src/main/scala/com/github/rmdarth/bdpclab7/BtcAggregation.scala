@@ -60,7 +60,7 @@ object BtcAggregation {
       // write data
       .writeStream
       .format("json")
-      .trigger(Trigger.ProcessingTime("30 seconds"))
+      .trigger(Trigger.ProcessingTime("60 seconds"))
       .option("checkpointLocation", "/bdpc/lab7/checkpoint")
       .start("gs://"+ bucketName +"/" + folderName)
       .awaitTermination()

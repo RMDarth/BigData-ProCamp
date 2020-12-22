@@ -7,6 +7,7 @@
 ```
 git clone https://github.com/RMDarth/BigData-ProCamp.git
 cd BigData-ProCamp/lab7/
+chmod +x submit_to_spark.sh create_topic.sh
 ```
  - build Spark job (or use prebuilt):
  ```
@@ -22,3 +23,6 @@ cp SparkStreaming/target/scala-2.12/sparkstreaming_2.12-1.0.jar .
   ```
  ./submit_to_spark.sh -g <gcp_bucket_name>
  ```
+
+Output is stored as json files in GCP Storage bucket (in folder btc, or user provided). Each json is 1 minute window aggregated data (with 3 min latency).
+Checkpoint for output sink is stored here in hdfs: /bdpc/lab7/checkpoint
