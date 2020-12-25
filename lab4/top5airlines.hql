@@ -6,6 +6,7 @@ USE HadoopLab4;
 
 !echo Creating tables...;
 
+-- GLC| The first line in `flights` the is the header, isn't?
 CREATE EXTERNAL TABLE IF NOT EXISTS Flights
 (YEAR int, MONTH int, DAY int, DAY_OF_WEEK int, 
  AIRLINE string, 
@@ -20,6 +21,7 @@ STORED AS TEXTFILE
 LOCATION 'hdfs:///bdpc/hadoop/lab4/flights'
 TBLPROPERTIES ("skip.header.line.count"="1");
 
+-- GLC| The first line in `airlines` the is the header, isn't?
 CREATE EXTERNAL TABLE IF NOT EXISTS Airlines
 (
  AIRLINE string, 
@@ -33,8 +35,13 @@ TBLPROPERTIES ("skip.header.line.count"="1");
 
 !echo Running query for Top 5 airlines....;
 
+-- GLC| What about table creation?
+-- GLC| Is it the best solution in terms of execution performance? What alternatives could you think about?
+-- GLC| Recommend: Estimate execution performance with|w/o joining, review execution plan, play with execution engines
 SELECT F.AIRLINE, A.NAME, AVG(F.DEPARTURE_DELAY) as AvgDelay 
 FROM Flights F JOIN Airlines A 
 	ON F.AIRLINE = A.AIRLINE 
 GROUP BY F.AIRLINE, A.NAME
 ORDER BY AvgDelay DESC LIMIT 5;
+
+-- GLC| Any ideas on general testing solution?
