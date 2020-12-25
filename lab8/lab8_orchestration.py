@@ -70,6 +70,7 @@ with models.DAG(
         task_id='check_gcs_file_sensor',
         timeout=120,
         bucket='barinov_bdpc',
+        soft_fail=True, # This fill skip the DAG if file not found, but alternatively this could be set to False to fail the DAG
         object='flights/{{ execution_date.format("%Y/%m/%d/%H") }}/_SUCCESS')
 
     # Create a Cloud Dataproc cluster.
