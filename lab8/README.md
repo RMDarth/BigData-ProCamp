@@ -17,3 +17,5 @@
  - check Airflow UI, it should now contain new flow with hourly execution
 
 DAG has sensor which check that file with format `gc://${bucket_name}/flights/${yyyy}/${MM}/${dd}/${HH}/_SUCCESS` exists, so in order to completely execute the workflow, such file should be created with current datetime folders.
+
+Output for 2 Spark jobs will be stored in provided GCS bucket, in folders flights/pop_airports/${datetime} and flights/canceled/${datetime}

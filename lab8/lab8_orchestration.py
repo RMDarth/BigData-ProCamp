@@ -30,7 +30,7 @@ task1_output_file = os.path.join(
     folder_name) + os.sep
 
 task2_output_file = os.path.join(
-    models.Variable.get('gcs_bucket'), 'flights', 'canceled',
+    bucket_name, 'flights', 'canceled',
     folder_name) + os.sep
 
 # Path to jar files
