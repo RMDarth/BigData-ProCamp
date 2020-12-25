@@ -60,17 +60,16 @@ default_dag_args = {
 
 with models.DAG(
         'bdpc_lab8_orchestration',
-        # Continue to run DAG once per day
         schedule_interval='@hourly',
         default_args=default_dag_args,
         catchup=False) as dag:
 
-    # Sensor to check file in GCS -> gc://${bucket_name}/flights/${yyyy}/${MM}/${dd}/${HH}/_SUCCESS
+    # Sensor to check file in GCS -> gc://${bucket_name}/flights/${yyyy}/${MM}/${dd}/${HH}/_SUCCESS .
     gcs_file_sensor = GoogleCloudStorageObjectSensor(
         task_id='check_gcs_file_sensor',
         timeout=120,
         bucket='barinov_bdpc',
-        soft_fail=True, # This fill skip the DAG if file not found, but alternatively this could be set to False to fail the DAG
+        soft_fail=True, # This will skip the DAG if file not found, but alternatively this could be set to False to fail the DAG.
         object='flights/{{ execution_date.format("%Y/%m/%d/%H") }}/_SUCCESS')
 
     # Create a Cloud Dataproc cluster.
