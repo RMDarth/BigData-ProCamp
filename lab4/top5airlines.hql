@@ -17,7 +17,8 @@ CREATE EXTERNAL TABLE IF NOT EXISTS Flights
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 STORED AS TEXTFILE
-LOCATION 'hdfs:///bdpc/hadoop/lab4/flights';
+LOCATION 'hdfs:///bdpc/hadoop/lab4/flights'
+TBLPROPERTIES ("skip.header.line.count"="1");
 
 CREATE EXTERNAL TABLE IF NOT EXISTS Airlines
 (
@@ -27,7 +28,8 @@ CREATE EXTERNAL TABLE IF NOT EXISTS Airlines
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 STORED AS TEXTFILE
-LOCATION 'hdfs:///bdpc/hadoop/lab4/airlines';
+LOCATION 'hdfs:///bdpc/hadoop/lab4/airlines'
+TBLPROPERTIES ("skip.header.line.count"="1");
 
 !echo Running query for Top 5 airlines....;
 

@@ -15,6 +15,8 @@ chmod +x submit_to_spark_t1.sh submit_to_spark_t2.sh upload_to_hdfs.sh
 ./upload_to_hdfs.sh -g gs://<path_to_folder_with_csv_files>
 ```
 
+Uploading files is optional. Scripts below can use files directly from GCS, using arguments `-f gs://<path_to_flights.csv> -p gs://<path_to_airports.csv>` and for second task additionaly `-a gs://<path_to_airlines.csv>`
+
 #### Task 1:
 - build spark app jar (or use prebuilt):
 ```
