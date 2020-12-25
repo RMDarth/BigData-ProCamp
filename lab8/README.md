@@ -2,6 +2,7 @@
 # Apache Airflow orchestration Lab Work (Lab #8)
 
 #### Configuration description:
+ - this workflow uses 2 separate jars (as 2 tasks from lab 6 were created as separate projects), so it will run 2 tasks in parallel
  - either build jars from lab 6 or use prebuilt fat jars from [here](https://drive.google.com/drive/folders/1CIXA7zLuWkq2D8mNTyT6IAhDNeJeW9Je?usp=sharing)
  - initialize Composer cluster
  - upload files to Google Cloud Storage: 
