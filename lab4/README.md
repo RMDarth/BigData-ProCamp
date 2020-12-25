@@ -19,3 +19,5 @@ hive -f top5airlines.hql
 ```
 
 Hive script should create a database, create external tables based on CSV files struct from Google Cloud Storage, and run query to calculate top 5 airlines with biggest average DEPARTURE_DELAY.
+
+To test the solution, we can use small test tables from lab3 (just change location for external tables to path to those test tables), which produce expected result. 
