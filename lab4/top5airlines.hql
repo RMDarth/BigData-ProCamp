@@ -33,8 +33,13 @@ TBLPROPERTIES ("skip.header.line.count"="1");
 
 !echo Running query for Top 5 airlines....;
 
+CREATE TABLE Result 
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE
+LOCATION 'hdfs:///bdpc/hadoop/lab4/result' AS (
 SELECT F.AIRLINE, A.NAME, AVG(F.DEPARTURE_DELAY) as AvgDelay 
 FROM Flights F JOIN Airlines A 
 	ON F.AIRLINE = A.AIRLINE 
 GROUP BY F.AIRLINE, A.NAME
-ORDER BY AvgDelay DESC LIMIT 5;
+ORDER BY AvgDelay DESC LIMIT 5);
