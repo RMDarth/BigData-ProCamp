@@ -2,7 +2,7 @@
 # Spark Streaming Lab Work (Lab #7)
 
 #### Configuration description:
- - install [sbt](https://www.scala-sbt.org/1.x/docs/Installing-sbt-on-Linux.html) to compile Scala code (or use prebuilt jars in "prebuilt" folder or fat jar from [here](https://drive.google.com/drive/folders/1CIXA7zLuWkq2D8mNTyT6IAhDNeJeW9Je?usp=sharing) )
+ - install [sbt](https://www.scala-sbt.org/1.x/docs/Installing-sbt-on-Linux.html) to compile Scala code (or use prebuilt jars in "prebuilt" folder or fat jar from [here](https://drive.google.com/drive/folders/16V2mz-AcnIqeBBPVCqkDrroKLZMoanQ1?usp=sharing) )
  - get this repo (execute on main VM on DataProc):
 ```
 git clone https://github.com/RMDarth/BigData-ProCamp.git
