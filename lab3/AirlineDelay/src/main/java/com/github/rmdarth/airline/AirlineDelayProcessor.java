@@ -32,6 +32,9 @@ public class AirlineDelayProcessor
         public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
             String[] attributes = value.toString().split(",");
             if (attributes.length < 12 || attributes[0].equals("YEAR") || attributes[11].isEmpty())
+                // GLC| it's ok to skip headers silently but it's better to log the entry out for debug purpose
+                // GLC| it's better to create a counter for non-valid entries
+                // GLC| Hint: The first parameter `key` is a file offset, check how many entries have it equal to `0`
                 return; // skip header and empty delays
 
             try {
@@ -39,9 +42,15 @@ public class AirlineDelayProcessor
                 delayTime.set(Integer.parseInt(attributes[11]));
                 context.write(airlineCode, delayTime);
             } catch (NumberFormatException ex) {
+                // GLC| it's a good practice to count exceptions with Counters and avoid logging out each error
+                // GLC| You can log out randomly with some chance (small one) or
+                // GLC| emit a log entry per exception type / entry exra conditions
+                // GLC| (say, NumberParseExc, entry has XX value) only once
                 System.err.println("Can't parse delay time: " + ex.getMessage());
             }
 
+            // GLC| There are default map counters which show the same info
+            // GLC| It make more sense to create domain related counters (say, per airline)
             Counter counter = context.getCounter(CountersEnum.class.getName(),
                     CountersEnum.INPUT_FLIGHTS.toString());
             counter.increment(1);
@@ -79,15 +88,23 @@ public class AirlineDelayProcessor
             }
         }
 
+        // GLC| Note: i haven't taken a look in the alternative job yet! :)
+        // GLC| if you set the only reducer for the job
+        // GLC| you can implement TopN algorithm right in here and write on Reducer.cleanup
+        // GLC| so there is no need for extra MR jobs
+
         @Override
         public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
+            // GLC| It's better to use double in java
             float sum = 0;
+            // GLC| It's better to long in this case
             float count = 0;
             for (IntWritable val : values) {
                 sum += val.get();
                 count ++;
             }
 
+            // GLC| if there is no key in the map I'd use the code (`key`) value
             result.set(airlineNameMap.get(key.toString()) + "\t" + Float.toString(sum / count));
             context.write(key, result);
         }
@@ -105,6 +122,7 @@ public class AirlineDelayProcessor
         Job jobAvgDelay = Job.getInstance(conf, "airline avg delay");
         jobAvgDelay.setJarByClass(AirlineDelayProcessor.class);
         jobAvgDelay.setMapperClass(AirlineMapper.class);
+        // GLC| It's worth adding a combiner but you cannot reuse AvgDelayReducer unless you modify it
         jobAvgDelay.setReducerClass(AvgDelayReducer.class);
         jobAvgDelay.setOutputKeyClass(Text.class);
         jobAvgDelay.setOutputValueClass(Text.class);
@@ -112,6 +130,13 @@ public class AirlineDelayProcessor
         jobAvgDelay.setMapOutputValueClass(IntWritable.class);
         jobAvgDelay.addCacheFile(new Path(remainingArgs[1]).toUri()); // to use for broadcast join
 
+        // It's worth playing with compression
+        // http://hadoop.apache.org/docs/stable/hadoop-mapreduce-client/hadoop-mapreduce-client-core/mapred-default.xml
+        // GLC| mapreduce.map.output.compress [false]	Should the outputs of the maps be compressed before being sent across the network. Uses SequenceFile compression.
+        // GLC| mapreduce.map.output.compress.codec[org.apache.hadoop.io.compress.DefaultCodec]	If the map outputs are compressed, how should they be compressed?
+        // GLC| conf.set("mapreduce.map.output.compress", true)
+        // GLC| FileOutputFormat.setCompressOutput();
+        // GLC| FileOutputFormat.setOutputCompressorClass(job, COMP_CLASS.class);
         FileInputFormat.addInputPath(jobAvgDelay, new Path(remainingArgs[0]));
         FileOutputFormat.setOutputPath(jobAvgDelay, new Path(remainingArgs[2]));
 

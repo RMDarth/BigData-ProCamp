@@ -53,6 +53,7 @@ public class AirlineDelayProcessorTest extends TestCase {
         readCSVInput("/incorrectFlights.csv");
 
         mapReduceDriver.withOutput(new Text("AS"), new Text("Alaska Airlines Inc.\t9.5"));
+        // GLC| if there is no key in the map I'd use the code (`key`) value
         mapReduceDriver.withOutput(new Text("XX"), new Text("null\t2.0"));
         mapReduceDriver.runTest();
     }
